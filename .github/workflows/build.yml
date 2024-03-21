@@ -49,7 +49,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build_cross_${{ github.sha }}
-          path: target/debug/rust-linux-cross-mac
+          path: target/x86_64-apple-darwin/debug/rust-linux-cross-mac
 
   build_mac:
     runs-on: macos-latest
