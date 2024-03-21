@@ -23,7 +23,7 @@ jobs:
           path: target/debug/rust-linux-cross-mac
 
   # Reference: https://dev.to/mbround18/rust-cross-compiling-from-linux-to-mac-on-github-actions-2mj8
-  build_mac_on_linux:
+  build_x86_mac_on_linux:
     runs-on: ubuntu-latest
 
     steps:
@@ -50,6 +50,34 @@ jobs:
         with:
           name: build_cross_${{ github.sha }}
           path: target/x86_64-apple-darwin/debug/rust-linux-cross-mac
+
+  build_arm_mac_on_linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Setup Rust, use the aarch64-apple-darwin target but the rest can be customized.
+      - name: Setup Rust
+        uses: ATiltedTree/setup-rust@v1
+        with:
+          targets: aarch64-apple-darwin
+          rust-version: stable # Works both with 'stable' and 'nightly'
+      # Use the v1 of this action
+      - name: Setup osxcross
+        uses: mbround18/setup-osxcross@v1
+        # This builds executables & sets env variables for rust to consume.
+        with:
+          osx-version: "12.3"
+      # Checkout your code
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      # Build your code for apple-darwin based release
+      - name: Build binary
+        run: cargo build --target aarch64-apple-darwin
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build_cross_${{ github.sha }}
+          path: target/aarch64-apple-darwin/debug/rust-linux-cross-mac
 
   build_mac:
     runs-on: macos-latest
