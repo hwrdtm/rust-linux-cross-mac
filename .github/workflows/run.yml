@@ -1,0 +1,34 @@
+name: run-build
+on:
+  workflow_dispatch: {}
+  pull_request: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Get the workflow run that has the latest build for main branch.
+      - name: Get the latest build for main branch
+        id: get_latest_build
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const { data: runs } = await github.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'rust-build.yml',
+              branch: 'main',
+              status: 'completed',
+              per_page: 1
+            });
+            return runs[0].id;
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download the latest build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build_${{ steps.get_latest_build.outputs.id }}
+          path: target/debug/rust-linux-cross-mac
+      - name: Run the latest build
+        run: ./target/debug/rust-linux-cross-mac
