@@ -79,6 +79,28 @@ jobs:
           name: build_cross_${{ github.sha }}
           path: target/aarch64-apple-darwin/debug/rust-linux-cross-mac
 
+  build_arm_mac_v2:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Install rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
+      - name: Build binary
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --target aarch64-apple-darwin
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build_mac_alt_${{ github.sha }}
+          path: target/aarch64-apple-darwin/debug/rust-linux-cross-mac
+
   build_mac:
     runs-on: macos-latest
 
