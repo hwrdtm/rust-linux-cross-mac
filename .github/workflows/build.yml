@@ -80,7 +80,7 @@ jobs:
           path: target/aarch64-apple-darwin/debug/rust-linux-cross-mac
 
   build_arm_mac_v2:
-    runs-on: macos-latest
+    runs-on: macos-14
 
     steps:
       - name: Checkout repo
@@ -102,7 +102,7 @@ jobs:
           path: target/aarch64-apple-darwin/debug/rust-linux-cross-mac
 
   build_mac:
-    runs-on: macos-latest
+    runs-on: macos-14
 
     steps:
       - name: Checkout repo
